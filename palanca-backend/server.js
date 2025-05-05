@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import cors from 'cors';
 import http from 'http';
 import { Server as SocketIo } from 'socket.io';
 
@@ -12,25 +11,22 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS antes de tudo
-const corsOptions = {
-  origin: [
-    'https://palancamedia.vercel.app',
-    'https://palancamedia-euclides-baltazars-projects.vercel.app',
-    'https://palancamedia-git-main-euclides-baltazars-projects.vercel.app',
-    'http://localhost:3000',
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
-};
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // pré-voo CORS
+// ✅ CORS manual e compatível com Render + Vercel
+const allowedOrigins = [
+  'https://palancamedia.vercel.app',
+  'https://palancamedia-euclides-baltazars-projects.vercel.app',
+  'https://palancamedia-git-main-euclides-baltazars-projects.vercel.app',
+  'http://localhost:3000',
+];
 
-// ✅ Middleware para OPTIONS (Render precisa disso!)
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -39,26 +35,38 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// MongoDB
+// ✅ Conexão com MongoDB
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ Conectado ao MongoDB'))
     .catch((err) => console.error('❌ Erro ao conectar ao MongoDB:', err));
 
-// Rotas
+// ✅ Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 
-// Socket.io
+// ✅ Socket.io
 const server = http.createServer(app);
 const io = new SocketIo(server, {
-  cors: corsOptions,
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
 });
 
-// Inicialização
+io.on('connection', (socket) => {
+  console.log('🟢 Novo cliente conectado via WebSocket');
+
+  socket.on('disconnect', () => {
+    console.log('🔴 Cliente desconectado');
+  });
+});
+
+// ✅ Inicialização
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
 
 
 

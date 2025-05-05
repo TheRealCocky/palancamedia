@@ -9,9 +9,10 @@ const auth = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Armazena os dados do usuário no request
-        next(); // Segue para o próximo middleware ou controller
+        req.user = decoded;
+        next();
     } catch (err) {
+        console.error('Erro ao verificar o token:', err.message);
         res.status(400).json({ msg: 'Token inválido.' });
     }
 };
