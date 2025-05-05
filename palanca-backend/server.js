@@ -48,7 +48,7 @@ app.use('/api/auth', authRoutes); // Usando as rotas de autenticação
 app.use('/api/news', newsRoutes); // Outras rotas, se necessário
 app.options('*', cors()); // importante para lidar com preflight
 // Inicialização
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
