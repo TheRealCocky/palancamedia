@@ -1,0 +1,16 @@
+{
+  "name": "Multimidea",
+  "short_name": "Multimidea",
+  "description": "Aplicação multimídia para a universidade.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
