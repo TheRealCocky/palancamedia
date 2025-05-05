@@ -12,37 +12,35 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
     setMensagem(''); // Limpar mensagem anterior ao tentar login
 
-    try {
-      const response = await axios.post('https://palanca-api.onrender.com/api/auth/login', {
-        email,
-        senha,
-      }, { withCredentials: true }); // Necessário para enviar cookies de autenticação
+    axios.post('https://palanca-api.onrender.com/api/auth/login', { email, senha })
+        .then(response => {
+          console.log('Login bem-sucedido:', response.data); // Para visualizar o retorno da API
 
-      console.log(response.data); // Para visualizar o retorno da API
+          if (response.data.token) {
+            localStorage.setItem('authToken', response.data.token);
+            localStorage.setItem('nome', response.data.nome);
 
-      if (response.data.token) {
-        localStorage.setItem('authToken', response.data.token);
-        localStorage.setItem('nome', response.data.nome);
-
-        window.dispatchEvent(new Event("authChanged"));
-        setMensagem('Login bem-sucedido!');
-        setTimeout(() => {
-          navigate('/');
-        }, 1000); // Redireciona após 1 segundo
-      } else {
-        setMensagem('Erro: Token não retornado.');
-      }
-    } catch (error) {
-      console.error('Erro ao fazer login', error);
-      setMensagem(error.response?.data?.msg || 'Erro ao fazer login.'); // Mensagem de erro padrão
-    } finally {
-      setLoading(false);
-    }
+            window.dispatchEvent(new Event("authChanged"));
+            setMensagem('Login bem-sucedido!');
+            setTimeout(() => {
+              navigate('/');
+            }, 1000); // Redireciona após 1 segundo
+          } else {
+            setMensagem('Erro: Token não retornado.');
+          }
+        })
+        .catch(error => {
+          console.error('Erro de login:', error);
+          setMensagem(error.response?.data?.msg || 'Erro ao fazer login.'); // Mensagem de erro padrão
+        })
+        .finally(() => {
+          setLoading(false);
+        });
   };
 
   return (
