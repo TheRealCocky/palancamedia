@@ -16,13 +16,13 @@ const app = express();
 app.use(express.json());
 app.use(cors({
   origin: [
-    'https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app', // Front-end em produção
-    'https://palancamedia.vercel.app', // Domínio adicional
-    'http://localhost:3000' // Front-end local (se você estiver testando localmente)
+    'https://palancamedia-git-main-euclides-baltazars-projects.vercel.app',  // Certifique-se de que o front-end está aqui
+    'http://localhost:3000',  // Certifique-se de que também está permitindo localhost, se estiver testando localmente
   ],
   methods: ['GET', 'POST'],
-  credentials: true,
+  credentials: true,  // Se precisar passar cookies ou headers
 }));
+
 
 // Criando servidor HTTP com Socket.io
 const server = http.createServer(app);
