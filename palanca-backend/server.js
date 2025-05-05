@@ -16,12 +16,14 @@ const app = express();
 app.use(express.json());
 app.use(cors({
   origin: [
-    'https://palancamedia-git-main-euclides-baltazars-projects.vercel.app',  // Certifique-se de que o front-end está aqui
-    'http://localhost:3000',  // Certifique-se de que também está permitindo localhost, se estiver testando localmente
+    'https://palancamedia.vercel.app',  // Permitir acesso da primeira URL
+    'https://palancamedia-euclides-baltazars-projects.vercel.app',  // Permitir acesso da segunda URL
+    'http://localhost:3000',  // Permitir localhost, se você estiver testando localmente
   ],
   methods: ['GET', 'POST'],
-  credentials: true,  // Se precisar passar cookies ou headers
+  credentials: true,  // Se for necessário para cookies ou autenticação
 }));
+
 
 
 // Criando servidor HTTP com Socket.io
