@@ -21,7 +21,7 @@ function Login() {
       const response = await axios.post('https://palanca-api.onrender.com/api/auth/login', {
         email,
         senha,
-      });
+      }, { withCredentials: true }); // Necessário para enviar cookies de autenticação
 
       console.log(response.data); // Para visualizar o retorno da API
 
@@ -39,7 +39,7 @@ function Login() {
       }
     } catch (error) {
       console.error('Erro ao fazer login', error);
-      setMensagem(error.response?.data?.msg || 'Erro ao fazer login.');
+      setMensagem(error.response?.data?.msg || 'Erro ao fazer login.'); // Mensagem de erro padrão
     } finally {
       setLoading(false);
     }

@@ -5,8 +5,8 @@ import cors from 'cors';
 import http from 'http';
 import { Server as SocketIo } from 'socket.io';
 
-import authRoutes from './routes/authRoutes.js';
-import newsRoutes from './routes/newsRoutes.js';
+import authRoutes from './routes/authRoutes.js';  // Importando as rotas de autenticação
+import newsRoutes from './routes/newsRoutes.js';  // Importando outras rotas (se necessário)
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
   origin: [
-    'https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app',  // Front-end em produção
+    'https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app', // Front-end em produção
     'https://palancamedia.vercel.app', // Domínio adicional
     'http://localhost:3000' // Front-end local (se você estiver testando localmente)
   ],
@@ -42,14 +42,15 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err) => console.error('❌ Erro ao conectar ao MongoDB:', err));
 
 // Rotas
-app.use('/api/auth', authRoutes);
-app.use('/api/news', newsRoutes);
+app.use('/api/auth', authRoutes); // Usando as rotas de autenticação
+app.use('/api/news', newsRoutes); // Outras rotas, se necessário
 
 // Inicialização
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
 
 
 
