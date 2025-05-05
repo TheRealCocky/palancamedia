@@ -6,40 +6,53 @@ import http from 'http';
 import { Server as SocketIo } from 'socket.io';
 
 import authRoutes from './routes/authRoutes.js';
-import newsRoutes from './routes/newsRoutes.js';  // Certifique-se de que esta importação está correta
+import newsRoutes from './routes/newsRoutes.js';
 
 dotenv.config();
 
 const app = express();
 
-// Configurações
+// Middleware
 app.use(express.json());
-app.use(cors()); // Isso já permite requisições de diferentes origens para as rotas REST, mas é necessário configurar para o Socket.io também.
+app.use(cors({
+  origin: ['https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app'],
+  methods: ['GET', 'POST'],
+  credentials: true,
+}));
 
-// Criando o servidor HTTP para integrar com o Socket.io
+// Criando servidor HTTP com Socket.io
 const server = http.createServer(app);
-
 const io = new SocketIo(server, {
   cors: {
-    origin: 'http://localhost:5000',
+    origin: ['https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app'],
     methods: ['GET', 'POST'],
+    credentials: true,
   },
 });
 
-// Conexão com o MongoDB
+// Eventos do socket (exemplo simples)
+io.on('connection', (socket) => {
+  console.log('Novo cliente conectado:', socket.id);
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado:', socket.id);
+  });
+});
+
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('Conectado ao MongoDB'))
-    .catch((err) => console.error('Erro ao conectar ao MongoDB:', err));
+    .then(() => console.log('✅ Conectado ao MongoDB'))
+    .catch((err) => console.error('❌ Erro ao conectar ao MongoDB:', err));
 
-// Registrando as rotas
-app.use('/api/auth', authRoutes); // Certifique-se de que está chamando corretamente as rotas de autenticação
-app.use('/api/news', newsRoutes); // Rota de notícias
+// Rotas
+app.use('/api/auth', authRoutes);
+app.use('/api/news', newsRoutes);
 
-// Iniciar o servidor na porta configurada
+// Inicialização
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
 
 
 

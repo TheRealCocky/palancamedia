@@ -18,7 +18,7 @@ function Login() {
     setMensagem(''); // Limpar mensagem anterior ao tentar login
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post('https://palanca-api.onrender.com/api/auth/login', {
         email,
         senha,
       });
