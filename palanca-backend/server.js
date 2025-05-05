@@ -12,37 +12,21 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// ✅ Coloque o CORS antes de qualquer rota ou middleware
+const corsOptions = {
+  origin: [
+    'https://palancamedia.vercel.app',
+    'https://palancamedia-euclides-baltazars-projects.vercel.app',
+    'https://palancamedia-git-main-euclides-baltazars-projects.vercel.app',
+    'http://localhost:3000',
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // ✅ Também aplica no preflight
+
 app.use(express.json());
-
-const allowedOrigins = [
-  'https://palancamedia.vercel.app',
-  'https://palancamedia-euclides-baltazars-projects.vercel.app',
-  'https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app',
-  'http://localhost:3000'
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
-
-// Criando servidor HTTP com Socket.io
-const server = http.createServer(app);
-const io = new SocketIo(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
-});
 
 // MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -52,6 +36,12 @@ mongoose.connect(process.env.MONGO_URI)
 // Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
+
+// Socket.io
+const server = http.createServer(app);
+const io = new SocketIo(server, {
+  cors: corsOptions,
+});
 
 // Inicialização
 const PORT = process.env.PORT || 5001;
