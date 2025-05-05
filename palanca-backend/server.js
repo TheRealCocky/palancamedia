@@ -46,7 +46,7 @@ mongoose.connect(process.env.MONGO_URI)
 // Rotas
 app.use('/api/auth', authRoutes); // Usando as rotas de autenticação
 app.use('/api/news', newsRoutes); // Outras rotas, se necessário
-
+app.options('*', cors()); // importante para lidar com preflight
 // Inicialização
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
