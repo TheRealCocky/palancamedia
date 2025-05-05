@@ -15,10 +15,14 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: ['https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app'],
+  origin: [
+    'https://palancamedia-kftiborac-euclides-baltazars-projects.vercel.app',
+    'https://palancamedia.vercel.app' // use o domínio que aparece no mobile
+  ],
   methods: ['GET', 'POST'],
   credentials: true,
 }));
+
 
 // Criando servidor HTTP com Socket.io
 const server = http.createServer(app);
