@@ -100,7 +100,7 @@ function Login() {
 
           {/* 🔗 Link para criar conta */}
           <p className="mt-4 text-center">
-            Não tem uma conta? <a href="/register" className="text-orange-500 hover:text-orange-700">Crie uma aqui</a>.
+            Não tem uma conta? <a href="/registo" className="text-orange-500 hover:text-orange-700">Crie uma aqui</a>.
           </p>
         </div>
       </div>
