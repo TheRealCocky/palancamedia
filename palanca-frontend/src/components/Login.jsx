@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
+// 🔗 Define API dinâmica (localhost ou Render)
+const API_URL = import.meta.env.VITE_API_URL ||
+    (process.env.NODE_ENV === 'development'
+        ? 'http://localhost:5000/api/auth'
+        : 'https://palanca-api.onrender.com/api/auth');
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -12,35 +18,37 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMensagem(''); // Limpar mensagem anterior ao tentar login
+    setMensagem('');
 
-    axios.post('https://palanca-api.onrender.com/api/auth/login', { email, senha })
-        .then(response => {
-          console.log('Login bem-sucedido:', response.data); // Para visualizar o retorno da API
+    try {
+      const response = await axios.post(`${API_URL}/login`, { email, senha });
 
-          if (response.data.token) {
-            localStorage.setItem('authToken', response.data.token);
-            localStorage.setItem('nome', response.data.nome);
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('nome', response.data.nome);
 
-            window.dispatchEvent(new Event("authChanged"));
-            setMensagem('Login bem-sucedido!');
-            setTimeout(() => {
-              navigate('/');
-            }, 1000); // Redireciona após 1 segundo
-          } else {
-            setMensagem('Erro: Token não retornado.');
-          }
-        })
-        .catch(error => {
-          console.error('Erro de login:', error);
-          setMensagem(error.response?.data?.msg || 'Erro ao fazer login.'); // Mensagem de erro padrão
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        window.dispatchEvent(new Event("authChanged"));
+        setMensagem('✅ Login bem-sucedido!');
+        setTimeout(() => navigate('/'), 1000);
+      } else {
+        setMensagem('⚠️ Erro: Token não retornado.');
+      }
+    } catch (error) {
+      console.error('Erro de login:', error);
+      setMensagem(error.response?.data?.msg || '⚠️ Erro ao fazer login.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,17 +88,13 @@ function Login() {
             <button
                 type="submit"
                 className={`w-full p-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition ${loading ? 'cursor-wait opacity-50' : ''}`}
-                disabled={loading || !email || !senha} // Desabilitar o botão se campos estiverem vazios
+                disabled={loading || !email || !senha}
             >
               {loading ? 'Carregando...' : 'Entrar'}
             </button>
           </form>
 
           {mensagem && <p className="mt-4 text-center text-red-500">{mensagem}</p>}
-
-          <div className="mt-4 text-center">
-            <p>Não tem uma conta? <a href="/registo" className="text-blue-500 hover:underline">Criar conta</a></p>
-          </div>
         </div>
       </div>
   );
