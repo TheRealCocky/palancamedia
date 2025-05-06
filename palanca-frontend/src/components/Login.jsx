@@ -10,7 +10,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = false;
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ function Login() {
       const response = await axios.post(`${API_URL}/login`, { email, senha }, {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('authToken')}` // ✅ Enviando token corretamente
+          "Authorization": `Bearer ${localStorage.getItem('authToken')}` // ✅ Certifique-se de que há um token válido
         }
       });
 
