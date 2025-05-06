@@ -3,10 +3,10 @@ import { registrar, login } from '../controllers/authController.js';
 
 const router = express.Router();
 
-// Rota para registro de usuário
+// Rota para registro
 router.post('/registrar', registrar);
 
-// Rota para login de usuário
+// Rota para login
 router.post('/login', login);
 
 export default router;

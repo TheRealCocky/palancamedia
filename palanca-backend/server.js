@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import http from 'http';
 import { Server as SocketIo } from 'socket.io';
-
 import authRoutes from './routes/authRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
 
@@ -11,12 +10,11 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS manual e compatível com Render + Vercel
+// 🔗 CORS compatível com localhost e Render
 const allowedOrigins = [
-  'https://palancamedia.vercel.app',
-  'https://palancamedia-euclides-baltazars-projects.vercel.app',
-  'https://palancamedia-git-main-euclides-baltazars-projects.vercel.app',
   'http://localhost:3000',
+  'https://palanca-api.onrender.com',
+  'https://palancamedia.vercel.app'
 ];
 
 app.use((req, res, next) => {
@@ -35,37 +33,40 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// ✅ Conexão com MongoDB
+// 🔗 Conexão com MongoDB
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ Conectado ao MongoDB'))
     .catch((err) => console.error('❌ Erro ao conectar ao MongoDB:', err));
 
-// ✅ Rotas
+// 🔗 Rota raiz
+app.get('/', (req, res) => {
+  res.send('Servidor está rodando 🚀');
+});
+
+// 🔗 Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 
-// ✅ Socket.io
+// 🔗 Socket.io
 const server = http.createServer(app);
 const io = new SocketIo(server, {
-  cors: {
-    origin: allowedOrigins,
-    credentials: true,
-  },
+  cors: { origin: allowedOrigins, credentials: true },
 });
 
 io.on('connection', (socket) => {
-  console.log('🟢 Novo cliente conectado via WebSocket');
+  console.log('🟢 Cliente conectado via WebSocket');
 
   socket.on('disconnect', () => {
     console.log('🔴 Cliente desconectado');
   });
 });
 
-// ✅ Inicialização
-const PORT = process.env.PORT || 5001;
+// 🔗 Inicialização
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
 
 
 
