@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import http from 'http';
 import { Server as SocketIo } from 'socket.io';
-import cors from 'cors'; // 🔗 Middleware de CORS
+import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
 
@@ -11,12 +11,11 @@ dotenv.config();
 
 const app = express();
 
-// 🔗 CORS configurado para Render e Vercel
+// 🔗 CORS atualizado para permitir conexões do Vercel e Render
 const allowedOrigins = [
   'http://localhost:3000',
   'https://palanca-api.onrender.com',
-  'https://palancamedia.vercel.app',
-  'https://palancamedia-ro3j31w83-euclides-baltazars-projects.vercel.app' // ✅ Adicionado Vercel
+  'https://palancamedia-frontend.vercel.app' // ✅ Atualizado para refletir o frontend correto
 ];
 
 app.use(cors({
