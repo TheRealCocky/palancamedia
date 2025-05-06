@@ -1,13 +1,13 @@
+import dotenv from 'dotenv'; // 🔥 Carregando primeiro para garantir acesso às variáveis de ambiente
+dotenv.config(); // ✅ Lendo variáveis do .env antes de carregar outras dependências
+
 import express from 'express';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import http from 'http';
 import { Server as SocketIo } from 'socket.io';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
-
-dotenv.config();
 
 const app = express();
 
@@ -60,12 +60,3 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
-
-
-
-
-
-
-
-
-
