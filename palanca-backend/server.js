@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import http from 'http';
 import { Server as SocketIo } from 'socket.io';
+import cors from 'cors'; // 🔗 Middleware de CORS
 import authRoutes from './routes/authRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
 
@@ -10,26 +11,20 @@ dotenv.config();
 
 const app = express();
 
-// 🔗 CORS compatível com localhost e Render
+// 🔗 CORS configurado para Render e Vercel
 const allowedOrigins = [
   'http://localhost:3000',
   'https://palanca-api.onrender.com',
-  'https://palancamedia.vercel.app'
+  'https://palancamedia.vercel.app',
+  'https://palancamedia-ro3j31w83-euclides-baltazars-projects.vercel.app' // ✅ Adicionado Vercel
 ];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+}));
 
 app.use(express.json());
 
@@ -43,11 +38,11 @@ app.get('/', (req, res) => {
   res.send('Servidor está rodando 🚀');
 });
 
-// 🔗 Rotas
+// 🔗 Rotas de autenticação e notícias
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 
-// 🔗 Socket.io
+// 🔗 Configuração do WebSocket (Socket.io)
 const server = http.createServer(app);
 const io = new SocketIo(server, {
   cors: { origin: allowedOrigins, credentials: true },
@@ -61,7 +56,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// 🔗 Inicialização
+// 🔗 Inicialização do servidor
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
