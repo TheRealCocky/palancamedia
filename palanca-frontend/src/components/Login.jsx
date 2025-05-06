@@ -4,10 +4,7 @@ import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 // 🔗 Define API dinâmica (localhost ou Render)
-const API_URL = import.meta.env.VITE_API_URL ||
-    (process.env.NODE_ENV === 'development'
-        ? 'http://localhost:5000/api/auth'
-        : 'https://palanca-api.onrender.com/api/auth');
+const API_URL = import.meta.env.VITE_API_URL || "https://palanca-api.onrender.com/api/auth";
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -31,7 +28,12 @@ function Login() {
     setMensagem('');
 
     try {
-      const response = await axios.post(`${API_URL}/login`, { email, senha });
+      const response = await axios.post(`${API_URL}/login`, { email, senha }, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('authToken')}` // ✅ Enviando token corretamente
+        }
+      });
 
       if (response.data.token) {
         localStorage.setItem('authToken', response.data.token);
@@ -95,6 +97,11 @@ function Login() {
           </form>
 
           {mensagem && <p className="mt-4 text-center text-red-500">{mensagem}</p>}
+
+          {/* 🔗 Link para criar conta */}
+          <p className="mt-4 text-center">
+            Não tem uma conta? <a href="/register" className="text-orange-500 hover:text-orange-700">Crie uma aqui</a>.
+          </p>
         </div>
       </div>
   );
