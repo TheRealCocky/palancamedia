@@ -11,7 +11,7 @@ function Login() {
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [loading, setLoading] = false;
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarSenha, setMostrarSenha] = false;
 
   const navigate = useNavigate();
 
@@ -29,13 +29,18 @@ function Login() {
 
     try {
       const response = await axios.post(`${API_URL}/login`, { email, senha }, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('authToken')}` // ✅ Certifique-se de que há um token válido
-        }
+        headers: { "Content-Type": "application/json" }
       });
 
-      if (response.data.token) {
+      console.log("✅ Dados recebidos:", response.data); // 🔥 Log para verificar o retorno da API
+
+      if (!response.data || typeof response.data !== "object") {
+        console.error("❌ Dados inválidos recebidos:", response.data);
+        setMensagem("⚠️ Erro inesperado no login. Tente novamente.");
+        return;
+      }
+
+      if (response.data.token && response.data.nome) {
         localStorage.setItem('authToken', response.data.token);
         localStorage.setItem('nome', response.data.nome);
 
@@ -43,7 +48,7 @@ function Login() {
         setMensagem('✅ Login bem-sucedido!');
         setTimeout(() => navigate('/'), 1000);
       } else {
-        setMensagem('⚠️ Erro: Token não retornado.');
+        setMensagem('⚠️ Erro: Token ou nome não retornados.');
       }
     } catch (error) {
       console.error('Erro de login:', error);
