@@ -1,10 +1,4 @@
-import dotenv from 'dotenv'; // 🔥 Carregando primeiro para garantir acesso às variáveis de ambiente
-dotenv.config(); // ✅ Lendo variáveis do .env antes de carregar outras dependências
 
-import express from 'express';
-import mongoose from 'mongoose';
-import http from 'http';
-import { Server as SocketIo } from 'socket.io';
 import dotenv from 'dotenv';
 dotenv.config();
 
