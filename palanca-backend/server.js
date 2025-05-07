@@ -14,6 +14,7 @@ const app = express();
 // 🔗 CORS atualizado para permitir conexões do Vercel e Render
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:5173',
   'https://palanca-api.onrender.com',
   'https://palancamedia-frontend.vercel.app' // ✅ Atualizado para refletir o frontend correto
 ];
