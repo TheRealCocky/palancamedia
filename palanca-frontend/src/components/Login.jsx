@@ -27,7 +27,6 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     setMensagem('');
-
     try {
       const response = await axios.post(`${API_URL}/login`, { email, senha }, {
         headers: { "Content-Type": "application/json" }
@@ -55,7 +54,9 @@ function Login() {
     } catch (error) {
       console.error("❌ Erro na requisição:", error);
       setMensagem(error.response?.data?.msg || '⚠️ Erro ao fazer login.');
-    } finally {
+    }
+
+    finally {
       setLoading(false);
     }
   };
