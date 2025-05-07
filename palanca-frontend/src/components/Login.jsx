@@ -32,11 +32,12 @@ function Login() {
         headers: { "Content-Type": "application/json" }
       });
 
-      console.log("✅ Dados recebidos:", response.data); // 🔥 Log para verificar o retorno da API
+      console.log("✅ Resposta completa da API:", response); // 🔥 Verifica toda a resposta
+      console.log("✅ Dados recebidos da API:", response.data); // 🔥 Verifica os dados específicos
 
       if (!response.data || typeof response.data !== "object") {
-        console.error("❌ Dados inválidos recebidos:", response.data);
-        setMensagem("⚠️ Erro inesperado no login. Tente novamente.");
+        console.error("❌ Erro: Resposta inválida recebida!", response.data);
+        setMensagem("⚠️ Erro no login. Tente novamente.");
         return;
       }
 
@@ -51,7 +52,7 @@ function Login() {
         setMensagem('⚠️ Erro: Token ou nome não retornados.');
       }
     } catch (error) {
-      console.error('Erro de login:', error);
+      console.error("❌ Erro na requisição:", error);
       setMensagem(error.response?.data?.msg || '⚠️ Erro ao fazer login.');
     } finally {
       setLoading(false);
