@@ -23,6 +23,9 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    historyApiFallback: true, // ✅ Corrige erro de navegação no React Router
+  },
 });
 
 
