@@ -19,12 +19,21 @@ const allowedOrigins = [
   'https://palancamedia-frontend.vercel.app' // ✅ Atualizado para refletir o frontend correto
 ];
 
+// CORS middleware com resposta ao preflight (OPTIONS) request
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
-  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Permitir os métodos necessários
   allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
 }));
+
+// Resposta ao método OPTIONS para garantir que a requisição de preflight funcione
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Permite todas as origens ou define para localhost específico
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.send(); // Responde à requisição de preflight
+});
 
 app.use(express.json());
 
