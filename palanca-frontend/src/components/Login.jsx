@@ -4,7 +4,8 @@ import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 // 🔗 Define API dinâmica (localhost ou Render)
-const API_URL = import.meta.env.VITE_API_URL || "https://palancamedia.onrender.com/api/auth/login";
+const API_URL = import.meta.env.VITE_API_URL || "https://palancamedia.onrender.com/api/auth";
+
 
 function Login() {
   const [email, setEmail] = useState('');
