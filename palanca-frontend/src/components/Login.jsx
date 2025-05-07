@@ -36,10 +36,11 @@ function Login() {
       console.log("✅ Dados recebidos da API:", response.data); // 🔥 Verifica os dados específicos
 
       if (!response.data || typeof response.data !== "object") {
-        console.error("❌ Erro: Resposta inválida recebida!", response.data);
-        setMensagem("⚠️ Erro no login. Tente novamente.");
+        console.error("❌ Dados inválidos recebidos:", response.data);
+        setMensagem("⚠️ Erro inesperado no login. Tente novamente.");
         return;
       }
+
 
       if (response.data.token && response.data.nome) {
         localStorage.setItem('authToken', response.data.token);
@@ -55,6 +56,7 @@ function Login() {
       console.error("❌ Erro na requisição:", error);
       setMensagem(error.response?.data?.msg || '⚠️ Erro ao fazer login.');
     }
+
 
     finally {
       setLoading(false);
