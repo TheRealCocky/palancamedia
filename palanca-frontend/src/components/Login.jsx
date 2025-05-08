@@ -4,7 +4,7 @@ import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 // 🔗 Define API dinâmica (localhost ou Render)
-const API_URL = import.meta.env.VITE_API_URL || "https://palancamedia.onrender.com/api/auth";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/auth";
 
 
 function Login() {
@@ -13,8 +13,6 @@ function Login() {
   const [mensagem, setMensagem] = useState('');
   const [loading, setLoading] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,19 +27,23 @@ function Login() {
     setLoading(true);
     setMensagem('');
     try {
-      const response = await axios.post(`${API_URL}/login`, { email, senha }, {
-        headers: { "Content-Type": "application/json" }
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        senha
+      }, {
+        withCredentials: true
       });
 
-      console.log("✅ Resposta completa da API:", response); // 🔥 Verifica toda a resposta
-      console.log("✅ Dados recebidos da API:", response.data); // 🔥 Verifica os dados específicos
+
+
+      console.log("✅ Resposta completa da API:", response);
+      console.log("✅ Dados recebidos da API:", response.data);
 
       if (!response.data || typeof response.data !== "object") {
         console.error("❌ Dados inválidos recebidos:", response.data);
         setMensagem("⚠️ Erro inesperado no login. Tente novamente.");
         return;
       }
-
 
       if (response.data.token && response.data.nome) {
         localStorage.setItem('authToken', response.data.token);
@@ -55,11 +57,14 @@ function Login() {
       }
     } catch (error) {
       console.error("❌ Erro na requisição:", error);
-      setMensagem(error.response?.data?.msg || '⚠️ Erro ao fazer login.');
-    }
-
-
-    finally {
+      if (error.response) {
+        setMensagem(error.response?.data?.msg || '⚠️ Erro ao fazer login.');
+      } else if (error.request) {
+        setMensagem('⚠️ Erro de rede. Tente novamente.');
+      } else {
+        setMensagem('⚠️ Erro inesperado. Tente novamente.');
+      }
+    } finally {
       setLoading(false);
     }
   };
