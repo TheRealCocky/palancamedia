@@ -14,11 +14,12 @@ function Registo() {
 
     try {
       // Enviando os dados para o servidor
-      const response = await axios.post('http://localhost:5000/api/auth/registrar', {
+      const response = await axios.post(`${API_URL}/registrar`, {
         nome,
         email,
         senha,
       });
+
 
       // Se o registro for bem-sucedido
       if (response.data.msg === 'Usuário registrado com sucesso!') {
